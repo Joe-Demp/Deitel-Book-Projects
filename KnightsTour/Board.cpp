@@ -14,6 +14,14 @@ Board::Board()
 	}	//	end for
 }	//	end constructor
 
+Board::Board(int b[][BOARD_DIM])
+{
+	for (int i = 0; i < BOARD_DIM; ++i) {
+		for (int j = 0; j < BOARD_DIM; ++j)
+			board[i][j] = b[i][j];
+	}	//	end outer for
+}	//	end overloaded constructor
+
 Board::~Board()
 {
 }	//	empty destructor
@@ -45,11 +53,24 @@ void Board::printBoard() const
 	}	//	end outer for
 }	//	end printBoard
 
-bool Board::checkRange(int row, int col) const		//	NOTE: since const methods call this function, it must also be const
+bool Board::checkMove(Index &p, int d_row, int d_col) const
 {
-	if (row < BOARD_DIM && col < BOARD_DIM
-		&& row >= 0 && col >= 0)
+	int row_move = p.getRow() + d_row;
+	int col_move = p.getCol() + d_col;
+
+	//	Eliminates visiting the same square twice,
+	//		may have to move this code later
+	if (getSquare(row_move, col_move) != 0)
+		return false;
+
+	return checkRange(row_move, col_move);
+}
+
+bool Board::checkRange(int row, int col) const
+{
+	if (row >= 0 && row < BOARD_DIM
+		&& col >= 0 && col < BOARD_DIM)
 		return true;
 
 	return false;
-}
+}	//	end
